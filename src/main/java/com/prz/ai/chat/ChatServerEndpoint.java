@@ -23,17 +23,17 @@ import javax.websocket.server.ServerEndpoint;
  * Klasa odpowiedzialna za obs³ugê strony serwera. 
  * Implementacja zdarzeñ @OnOpen, @OnMessage, @OnClose i @OnError
  */
-@ServerEndpoint("/chatroomserverendpoint")
-public class ChatroomServerEndpoint {
+@ServerEndpoint("/chatendpoint")
+public class ChatServerEndpoint {
 
 	// Set zawieraj¹cy userów chatu
-	static Set<Session> mChatroomUsers = Collections.synchronizedSet(new HashSet<Session>());
+	static Set<Session> mChatUsers = Collections.synchronizedSet(new HashSet<Session>());
 
 	@OnOpen
 	public void handleOpen(Session userSession) throws IOException {
-		mChatroomUsers.add(userSession);
+		mChatUsers.add(userSession);
 		
-		Iterator<Session> iterator = mChatroomUsers.iterator();
+		Iterator<Session> iterator = mChatUsers.iterator();
 		while(iterator.hasNext()) 
 			iterator.next().getBasicRemote().sendText(buildJsonUsersData());
 	}
@@ -47,7 +47,7 @@ public class ChatroomServerEndpoint {
 	@OnMessage
 	public void handleMessage(Session userSession, String message) throws IOException {
 		String username = (String) userSession.getUserProperties().get("username");
-		Iterator<Session> iterator = mChatroomUsers.iterator();
+		Iterator<Session> iterator = mChatUsers.iterator();
 		
 		if (username == null) {
 			userSession.getUserProperties().put("username", message);
@@ -63,9 +63,9 @@ public class ChatroomServerEndpoint {
 
 	@OnClose
 	public void handleClose(Session userSession) throws IOException {
-		mChatroomUsers.remove(userSession);
+		mChatUsers.remove(userSession);
 		
-		Iterator<Session> iterator = mChatroomUsers.iterator();
+		Iterator<Session> iterator = mChatUsers.iterator();
 		while(iterator.hasNext()) 
 			iterator.next().getBasicRemote().sendText(buildJsonUsersData());
 	}
@@ -97,7 +97,7 @@ public class ChatroomServerEndpoint {
 	
 	private Set<String> getUserNames() {
 		HashSet<String> userNames = new HashSet<String>();
-		Iterator<Session> iterator = mChatroomUsers.iterator();
+		Iterator<Session> iterator = mChatUsers.iterator();
 		while(iterator.hasNext())
 			userNames.add(iterator.next().getUserProperties().get("username").toString());
 		

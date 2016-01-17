@@ -1,8 +1,8 @@
 
 /**
- * Otwarcie po��czenia.
+ * Otwarcie polaczenia.
  */
-var webSocket = new WebSocket("ws://localhost:8080/WebSocketChatNTP/chatroomserverendpoint");
+var webSocket = new WebSocket("ws://localhost:8080/Chat/chatendpoint");
 
 window.onload = function() {
 	// Hide chat content
@@ -11,13 +11,15 @@ window.onload = function() {
 };
 
 /**
- * Obs�uga wydarze� powi�zanych z webSocketem.
+ * Obsluga wydarzen powiazanych z webSocketem.
  */
 
 webSocket.onmessage = function processMessage(message) {
 	var jsonData = JSON.parse(message.data);
 	if (jsonData.message != null) 
 		messagesTextArea.value += jsonData.message + "\n";
+	
+	messagesTextArea.style.color = "blue";
 	
 	if(jsonData.users != null) {
 		usersList.value = "";
@@ -36,7 +38,7 @@ window.onbeforeunload = function() {
 
 
 /**
- * Wysya�anie wiadomo�ci na serwer. 
+ * Wysylanie wiadomosci na serwer. 
  */
 function sendMessage() {
 	if(messageText.value != "")
@@ -61,7 +63,7 @@ function doLogin() {
 }
 			
 /**
- * Wysya�anie wiadomo�ci przez naci�ni�cie klawisza Enter.
+ * Wysyalanie wiadomosci przez nacisniecie klawisza Enter.
  */
 function onEnter(event) {
 	var id = event.target.id;	
